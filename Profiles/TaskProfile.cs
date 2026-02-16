@@ -9,6 +9,8 @@ namespace EasyManagement.API.Profiles
         {
             CreateMap<TaskCreateDto, Models.Task>();
             CreateMap<Models.Task, TaskReadDto>();
+            CreateMap<TaskPriorityUpdate, Models.Task>();
+            CreateMap<TaskStatusUpdate, Models.Task>();
         }
     }
 }
