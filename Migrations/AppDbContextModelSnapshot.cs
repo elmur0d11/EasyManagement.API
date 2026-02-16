@@ -48,7 +48,7 @@ namespace EasyManagement.API.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("rooms");
+                    b.ToTable("rooms", (string)null);
                 });
 
             modelBuilder.Entity("EasyManagement.API.Models.RoomMember", b =>
@@ -78,7 +78,7 @@ namespace EasyManagement.API.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("roomMembers");
+                    b.ToTable("roomMembers", (string)null);
                 });
 
             modelBuilder.Entity("EasyManagement.API.Models.Task", b =>
@@ -124,7 +124,7 @@ namespace EasyManagement.API.Migrations
 
                     b.HasIndex("user_id");
 
-                    b.ToTable("tasks");
+                    b.ToTable("tasks", (string)null);
                 });
 
             modelBuilder.Entity("EasyManagement.API.Models.User", b =>
@@ -159,7 +159,7 @@ namespace EasyManagement.API.Migrations
 
                     b.HasKey("id");
 
-                    b.ToTable("users");
+                    b.ToTable("users", (string)null);
                 });
 
             modelBuilder.Entity("EasyManagement.API.Models.Room", b =>

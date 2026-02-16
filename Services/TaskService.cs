@@ -75,6 +75,13 @@ namespace EasyManagement.API.Services
             var task = await _context.tasks.FirstOrDefaultAsync(t => t.title == taskTitle && t.room_id == room.Id);
             if (task is null) throw new KeyNotFoundException("Task with the specified title does not exist in the specified room.");
 
+            // Validate the new priority value
+            var allowedPriorities = new[] { "Low", "Medium", "High" };
+            if (!allowedPriorities.Contains(request.Priority))
+            {
+                throw new ArgumentException($"Invalid priority. Allowed values are: {string.Join(", ", allowedPriorities)}");
+            }
+
             // Update the task's priority
             task.priority = request.Priority;
 
@@ -99,6 +106,13 @@ namespace EasyManagement.API.Services
             var task = await _context.tasks.FirstOrDefaultAsync(t => t.title == taskTitle && t.room_id == room.Id);
             if (task is null) throw new KeyNotFoundException("Task with the specified title does not exist in the specified room.");
 
+            // Validate the new status value
+            var allowedStatuses = new[] { "Pending", "In Progress", "Completed" };
+            if (!allowedStatuses.Contains(request.Status))
+            {
+                throw new ArgumentException($"Invalid status. Allowed values are: {string.Join(", ", allowedStatuses)}");
+            }
+
             // Update the task's status
             task.status = request.Status;
 
@@ -109,5 +123,29 @@ namespace EasyManagement.API.Services
             return _mapper.Map<TaskReadDto>(task);
         }
 
+        public async Task<TaskReadDto> UpdateTask(int userId, string taskTitle, string roomCode, TaskUpdateDto request)
+        {
+            // Verify that the room exists
+            var room = await _context.rooms.FirstOrDefaultAsync(r => r.UniqueCode == roomCode);
+            if (room is null) throw new KeyNotFoundException("Room with the specified code does not exist.");
+
+            // Verify that the user is a member of the room
+            var isMemeber = await _context.roomMembers.AnyAsync(rm => rm.RoomId == room.Id && rm.UserId == userId);
+            if (!isMemeber) throw new UnauthorizedAccessException("User is not a member of the specified room.");
+
+            // Verify that the task exists in the specified room
+            var task = await _context.tasks.FirstOrDefaultAsync(t => t.title == taskTitle && t.room_id == room.Id);
+            if (task is null) throw new KeyNotFoundException("Task with the specified title does not exist in the specified room.");
+
+            // Update the task's title and description
+            task.title = request.Title;
+            task.description = request.Description;
+
+            // Save the changes to the database
+            await _context.SaveChangesAsync();
+
+            // Map the updated task to a read DTO and return it
+            return _mapper.Map<TaskReadDto>(task);
+        }
     }
 }

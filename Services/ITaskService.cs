@@ -8,5 +8,6 @@ namespace EasyManagement.API.Services
         Task<IEnumerable<TaskReadDto>> GetTasks(string roomCode, int userId);
         Task<TaskReadDto> UpdatePriority(int userId, string taskTitle, string roomCode, TaskPriorityUpdate request);
         Task<TaskReadDto> UpdateStatus(int userId, string taskTitle, string roomCode, TaskStatusUpdate request);
+        Task<TaskReadDto> UpdateTask(int userId, string taskTitle, string roomCode, TaskUpdateDto request);
     }
 }

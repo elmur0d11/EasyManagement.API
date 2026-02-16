@@ -57,7 +57,7 @@ namespace EasyManagement.API.Controllers
         }
 
         [Authorize]
-        [HttpPut("update-task-prioriy")]
+        [HttpPut("update-priority")]
         public async Task<IActionResult> UpdateTaskPriority(string roomCode, string taskTitle, TaskPriorityUpdate request)
         {
             // Get user id from token
@@ -79,7 +79,7 @@ namespace EasyManagement.API.Controllers
         }
 
         [Authorize]
-        [HttpPut("update-task-status")]
+        [HttpPut("update-status")]
         public async Task<IActionResult> UpdateTaskStatus(string roomCode, string taskTitle, TaskStatusUpdate request)
         {
             // Get user id from token
@@ -96,5 +96,26 @@ namespace EasyManagement.API.Controllers
             // Return success message
             return Ok(result);
         }
-    }
+
+        [Authorize]
+        [HttpPut("update-task")]
+        public async Task<IActionResult> UpdateTask(string roomCode, string taskTitle, TaskUpdateDto request)
+        {
+            // Get user id from token
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+                return Unauthorized("User ID not found in token.");
+            // Parse user id
+            int userId = int.Parse(userIdClaim.Value);
+
+            // Update task
+            var result = await _taskService.UpdateTask(userId, taskTitle, roomCode, request);
+            if (result is null) return BadRequest("Can't update task");
+
+            // Return success message
+            return Ok(result);
+        }
+           
+
+        }
 }
