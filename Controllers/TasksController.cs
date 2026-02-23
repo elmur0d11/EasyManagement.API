@@ -56,7 +56,7 @@ namespace EasyManagement.API.Controllers
             return Ok(tasks);
         }
 
-        [Authorize]
+        [Authorize(Roles = "PM, ProjectManager")]
         [HttpPut("update-priority")]
         public async Task<IActionResult> UpdateTaskPriority(string roomCode, string taskTitle, TaskPriorityUpdate request)
         {
@@ -78,7 +78,7 @@ namespace EasyManagement.API.Controllers
             return Ok(result);
         }
 
-        [Authorize]
+        [Authorize(Roles = "PM, ProjectManager")]
         [HttpPut("update-status")]
         public async Task<IActionResult> UpdateTaskStatus(string roomCode, string taskTitle, TaskStatusUpdate request)
         {
@@ -97,7 +97,7 @@ namespace EasyManagement.API.Controllers
             return Ok(result);
         }
 
-        [Authorize]
+        [Authorize(Roles = "PM, ProjectManager")]
         [HttpPut("update-task")]
         public async Task<IActionResult> UpdateTask(string roomCode, string taskTitle, TaskUpdateDto request)
         {

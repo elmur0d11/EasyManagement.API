@@ -19,6 +19,7 @@ namespace EasyManagement.API.Controllers
             _roomService = roomService;
         }
 
+        [Authorize]
         [HttpPost("create")]
         public async Task<IActionResult> CreateRoom(RoomCreateDto request)
         {
@@ -37,6 +38,7 @@ namespace EasyManagement.API.Controllers
             return Ok(result);
         }
 
+        [Authorize]
         [HttpPost("join")]
         public async Task<IActionResult> JoinRoom(JoinRoomDto request)
         {
@@ -66,6 +68,7 @@ namespace EasyManagement.API.Controllers
             return Ok(new { message = "You Joined the room successfully" });
         }
 
+        [Authorize(Roles = "PM, ProjectManager")]
         [HttpPut("rename-room")]
         public async Task<IActionResult> RenameRoom(RoomUpdateDto request)
         {
@@ -80,6 +83,7 @@ namespace EasyManagement.API.Controllers
             return Ok(rooms);
         }
 
+        [Authorize]
         [HttpGet("my-rooms")]
         public async Task<IActionResult> GetMyRooms()
         {
