@@ -10,6 +10,7 @@ namespace EasyManagement.API.Profiles
         {
             CreateMap<RoomCreateDto, Room>();
             CreateMap<Room, RoomReadDto>();
+            CreateMap<RoomUpdateDto, Room>();
         }
     }
 }

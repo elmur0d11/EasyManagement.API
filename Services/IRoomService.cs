@@ -8,5 +8,6 @@ namespace EasyManagement.API.Services
         Task<RoomReadDto> CreateRoomAsync(RoomCreateDto request, int ownerId);
         Task<bool> JoinRoom(string roomCode, int userId, string role);
         Task<IEnumerable<RoomReadDto>> GetRooms(int userId);
+        Task<RoomReadDto> UpdateRoom(int userID, RoomUpdateDto request);
     }
 }

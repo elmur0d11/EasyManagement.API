@@ -80,7 +80,26 @@ namespace EasyManagement.API.Services
             return _mapper.Map<IEnumerable<RoomReadDto>>(userRooms);
         }
 
+        public async Task<RoomReadDto> UpdateRoom(int userID, RoomUpdateDto request)
+        {
+            var room = _mapper.Map<Room>(request);
+
+            var rooms = await _context.rooms.FirstOrDefaultAsync(r => r.UniqueCode == request.UniqueCode);
+            if (rooms is null) throw new KeyNotFoundException("Room with the specified code does not exist.");
+
+            var isMemeber = await _context.roomMembers.AnyAsync(rm => rm.RoomId == rooms.Id && rm.UserId == userID);
+            if (!isMemeber) throw new UnauthorizedAccessException("User is not a member of the specified room.");
+
+            rooms.RoomName = room.RoomName;
+
+            await _context.SaveChangesAsync();
+
+            return _mapper.Map<RoomReadDto>(rooms);
+        }
+
         // Generate a unique code for the room
         private string GenerateUniqueCode() => Guid.NewGuid().ToString().Substring(0, 8).ToUpper();
+
+        
     }
 }
