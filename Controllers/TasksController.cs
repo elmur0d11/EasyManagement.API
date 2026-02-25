@@ -115,7 +115,19 @@ namespace EasyManagement.API.Controllers
             // Return success message
             return Ok(result);
         }
-           
 
+        [Authorize(Roles = "PM, ProjectManager")]
+        [HttpDelete("delete-task")]
+        public async Task<IActionResult> DeleteTask(TaskDeleteDto request)
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null) return Unauthorized("User ID not found in token.");
+            int userId = int.Parse(userIdClaim.Value);
+
+            var result = await _taskService.DeleteTask(userId, request);
+
+            return NoContent();
         }
+
+    }
 }

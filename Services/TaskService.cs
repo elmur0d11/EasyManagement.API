@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.Execution;
 using EasyManagement.API.Data;
 using EasyManagement.API.Dto;
 using Microsoft.EntityFrameworkCore;
@@ -23,9 +24,9 @@ namespace EasyManagement.API.Services
             var room = await _context.rooms.FirstOrDefaultAsync(r => r.UniqueCode == request.room_code);
             if (room == null) throw new KeyNotFoundException("Room with the specified code does not exist.");
 
-            // Verify that the user is a member of the room
-            var isMember = await _context.roomMembers.AnyAsync(rm => rm.RoomId == room.Id && rm.UserId == userId);
-            if (!isMember) throw new UnauthorizedAccessException("User is not a member of the specified room.");
+            // Verify that the user is a owner of the room
+            var isOwner = await _context.rooms.AnyAsync(r => r.OwnerId == userId);
+            if (!isOwner) throw new UnauthorizedAccessException("Only the owner can delete task.");
 
             // Set additional properties
             tasks.room_id = room.Id;
@@ -40,6 +41,25 @@ namespace EasyManagement.API.Services
 
             // Map the saved task back to a read DTO and return it
             return _mapper.Map<TaskReadDto>(tasks);
+        }
+
+        public async Task<TaskReadDto> DeleteTask(int userId, TaskDeleteDto request)
+        {
+            var room = await _context.rooms.FirstOrDefaultAsync(r => r.UniqueCode == request.RoomCode);
+            if (room == null) throw new KeyNotFoundException("Room with the specified code does not exist.");
+
+            var isOwner = await _context.rooms.AnyAsync(r => r.OwnerId == userId);
+            if (!isOwner) throw new UnauthorizedAccessException("Only the owner can delete task.");
+
+            if (request.TaskTitleReply != request.TaskTitle) throw new Exception("Please reply title of the task.");
+
+            var task = await _context.tasks.FirstOrDefaultAsync(t => t.title == request.TaskTitle);
+            if (task is null) throw new KeyNotFoundException("Room with the specified code does not exist.");
+
+            _context.tasks.Remove(task);
+            await _context.SaveChangesAsync();
+
+            return null!;
         }
 
         public async Task<IEnumerable<TaskReadDto>> GetTasks(string roomCode, int userId)
@@ -129,9 +149,9 @@ namespace EasyManagement.API.Services
             var room = await _context.rooms.FirstOrDefaultAsync(r => r.UniqueCode == roomCode);
             if (room is null) throw new KeyNotFoundException("Room with the specified code does not exist.");
 
-            // Verify that the user is a member of the room
-            var isMemeber = await _context.roomMembers.AnyAsync(rm => rm.RoomId == room.Id && rm.UserId == userId);
-            if (!isMemeber) throw new UnauthorizedAccessException("User is not a member of the specified room.");
+            // Verify that the user is a owner of the room
+            var isOwner = await _context.rooms.AnyAsync(r => r.OwnerId == userId);
+            if (!isOwner) throw new UnauthorizedAccessException("Only the owner can delete task.");
 
             // Verify that the task exists in the specified room
             var task = await _context.tasks.FirstOrDefaultAsync(t => t.title == taskTitle && t.room_id == room.Id);

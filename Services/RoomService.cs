@@ -80,21 +80,37 @@ namespace EasyManagement.API.Services
             return _mapper.Map<IEnumerable<RoomReadDto>>(userRooms);
         }
 
-        public async Task<RoomReadDto> UpdateRoom(int userID, RoomUpdateDto request)
+        public async Task<RoomReadDto> UpdateRoom(int userId, RoomUpdateDto request)
         {
             var room = _mapper.Map<Room>(request);
 
             var rooms = await _context.rooms.FirstOrDefaultAsync(r => r.UniqueCode == request.UniqueCode);
             if (rooms is null) throw new KeyNotFoundException("Room with the specified code does not exist.");
 
-            var isMemeber = await _context.roomMembers.AnyAsync(rm => rm.RoomId == rooms.Id && rm.UserId == userID);
-            if (!isMemeber) throw new UnauthorizedAccessException("User is not a member of the specified room.");
+            var isOwner = await _context.rooms.AnyAsync(r => r.OwnerId == userId);
+            if (!isOwner) throw new UnauthorizedAccessException("Only the owner can delete the room.");
 
             rooms.RoomName = room.RoomName;
 
             await _context.SaveChangesAsync();
 
             return _mapper.Map<RoomReadDto>(rooms);
+        }
+
+        public async Task<RoomReadDto> DeleteRoom(int userId, RoomDeleteDto request)
+        {
+            if (request.RoomNameReply != request.RoomName) throw new Exception("Please reply title of the task.");
+
+            var rooms = await _context.rooms.FirstOrDefaultAsync(r => r.UniqueCode == request.RoomCode);
+            if (rooms is null) throw new KeyNotFoundException("Room with the specified code does not exist.");
+
+            var isOwner = await _context.rooms.AnyAsync(r=>r.OwnerId == userId);
+            if (!isOwner) throw new UnauthorizedAccessException("Only the owner can delete the room.");
+
+            _context.rooms.Remove(rooms);
+            await _context.SaveChangesAsync();
+
+            return null!;
         }
 
         // Generate a unique code for the room

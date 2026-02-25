@@ -30,6 +30,20 @@ namespace EasyManagement.API.Data
                       .WithMany()
                       .HasForeignKey(t => t.room_id);
             });
+
+            // If room deleted delete all its tasks
+            modelBuilder.Entity<Models.Task>()
+                .HasOne(t => t.Room)
+                .WithMany()
+                .HasForeignKey(t => t.room_id)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // If room deleted delete all its members
+            modelBuilder.Entity<RoomMember>()
+                .HasOne(rm => rm.Room)
+                .WithMany()
+                .HasForeignKey(rm => rm.RoomId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

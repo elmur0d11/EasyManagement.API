@@ -68,7 +68,7 @@ namespace EasyManagement.API.Controllers
             return Ok(new { message = "You Joined the room successfully" });
         }
 
-        [Authorize(Roles = "PM, ProjectManager")]
+        [Authorize]
         [HttpPut("rename-room")]
         public async Task<IActionResult> RenameRoom(RoomUpdateDto request)
         {
@@ -101,5 +101,20 @@ namespace EasyManagement.API.Controllers
             return Ok(rooms);
         }
 
+        [Authorize]
+        [HttpDelete("delete-room")]
+        public async Task<IActionResult> DeleteRoom(RoomDeleteDto request)
+        {
+            // Extract user ID from JWT token
+            var userIdClaims = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaims == null)
+                return Unauthorized("User ID not found in token.");
+            // Parse user ID
+            int userId = int.Parse(userIdClaims.Value);
+
+            var room = await _roomService.DeleteRoom(userId, request);
+
+            return NoContent();
+        }
     }
 }
