@@ -43,7 +43,7 @@ namespace EasyManagement.API.Services
             return _mapper.Map<TaskReadDto>(tasks);
         }
 
-        public async Task<TaskReadDto> DeleteTask(int userId, TaskDeleteDto request)
+        public async Task DeleteTask(int userId, TaskDeleteDto request)
         {
             var room = await _context.rooms.FirstOrDefaultAsync(r => r.UniqueCode == request.RoomCode);
             if (room == null) throw new KeyNotFoundException("Room with the specified code does not exist.");
@@ -59,7 +59,6 @@ namespace EasyManagement.API.Services
             _context.tasks.Remove(task);
             await _context.SaveChangesAsync();
 
-            return null!;
         }
 
         public async Task<IEnumerable<TaskReadDto>> GetTasks(string roomCode, int userId)

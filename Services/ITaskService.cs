@@ -9,6 +9,6 @@ namespace EasyManagement.API.Services
         Task<TaskReadDto> UpdatePriority(int userId, string taskTitle, string roomCode, TaskPriorityUpdate request);
         Task<TaskReadDto> UpdateStatus(int userId, string taskTitle, string roomCode, TaskStatusUpdate request);
         Task<TaskReadDto> UpdateTask(int userId, string taskTitle, string roomCode, TaskUpdateDto request);
-        Task<TaskReadDto> DeleteTask(int userId, TaskDeleteDto request);
+        Task DeleteTask(int userId, TaskDeleteDto request);
     }
 }

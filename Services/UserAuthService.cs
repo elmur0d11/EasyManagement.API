@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BCrypt.Net;
 using EasyManagement.API.Data;
 using EasyManagement.API.Dto;
 using EasyManagement.API.Models;
@@ -132,6 +133,6 @@ namespace EasyManagement.API.Services
             return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
         }
 
-
+      
     }
 }

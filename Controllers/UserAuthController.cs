@@ -1,14 +1,15 @@
-﻿using EasyManagement.API.Dto;
-using EasyManagement.API.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
 using BCrypt.Net;
-using Microsoft.AspNetCore.Identity;
-using AutoMapper;
 using EasyManagement.API.Data;
+using EasyManagement.API.Dto;
+using EasyManagement.API.Models;
 using EasyManagement.API.Services;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace EasyManagement.API.Controllers
 {

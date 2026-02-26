@@ -124,7 +124,7 @@ namespace EasyManagement.API.Controllers
             if (userIdClaim == null) return Unauthorized("User ID not found in token.");
             int userId = int.Parse(userIdClaim.Value);
 
-            var result = await _taskService.DeleteTask(userId, request);
+            await _taskService.DeleteTask(userId, request);
 
             return NoContent();
         }
