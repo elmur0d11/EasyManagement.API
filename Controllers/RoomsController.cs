@@ -1,14 +1,13 @@
 ﻿using EasyManagement.API.Dto;
 using EasyManagement.API.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace EasyManagement.API.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/v1/room")]
     [ApiController]
     public class RoomsController : ControllerBase
     {
@@ -69,7 +68,7 @@ namespace EasyManagement.API.Controllers
         }
 
         [Authorize]
-        [HttpPut("rename-room")]
+        [HttpPut("rename")]
         public async Task<IActionResult> RenameRoom(RoomUpdateDto request)
         {
             var userIdClaims = User.FindFirst(ClaimTypes.NameIdentifier);
@@ -84,7 +83,7 @@ namespace EasyManagement.API.Controllers
         }
 
         [Authorize]
-        [HttpGet("my-rooms")]
+        [HttpGet("rooms")]
         public async Task<IActionResult> GetMyRooms()
         {
             // Extract user ID from JWT token
@@ -102,7 +101,7 @@ namespace EasyManagement.API.Controllers
         }
 
         [Authorize]
-        [HttpDelete("delete-room")]
+        [HttpDelete("delete")]
         public async Task<IActionResult> DeleteRoom(RoomDeleteDto request)
         {
             // Extract user ID from JWT token

@@ -1,19 +1,12 @@
 ﻿using AutoMapper;
-using BCrypt.Net;
-using EasyManagement.API.Data;
 using EasyManagement.API.Dto;
 using EasyManagement.API.Models;
 using EasyManagement.API.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace EasyManagement.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/auth")]
     [ApiController]
     public class UserAuthController : ControllerBase
     {
@@ -53,7 +46,7 @@ namespace EasyManagement.API.Controllers
             return Ok(result);
         }
 
-        [HttpPost("refresh-token")]
+        [HttpPost("refreshToken")]
         public async Task<ActionResult<TokenResponseDto>> RefreshToken(RefreshTokenRequestDto request)
         {
             // Refresh tokens

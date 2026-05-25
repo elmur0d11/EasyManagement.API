@@ -1,13 +1,12 @@
 ﻿using EasyManagement.API.Dto;
 using EasyManagement.API.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace EasyManagement.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/task")]
     [ApiController]
     public class TasksController : ControllerBase
     {
@@ -18,7 +17,7 @@ namespace EasyManagement.API.Controllers
         }
 
         [Authorize(Roles = "PM, ProjectManager")]
-        [HttpPost("create-task")]
+        [HttpPost("create")]
         public async Task<IActionResult> CreateTask(TaskCreateDto request)
         {
             // Get user id from token
@@ -38,7 +37,7 @@ namespace EasyManagement.API.Controllers
         }
 
         [Authorize]
-        [HttpGet("get-tasks")]
+        [HttpGet("tasks")]
         public async Task<IActionResult> GetTasks(string roomCode) 
         {
             // Get user id from token
@@ -57,7 +56,7 @@ namespace EasyManagement.API.Controllers
         }
 
         [Authorize(Roles = "PM, ProjectManager")]
-        [HttpPut("update-priority")]
+        [HttpPut("updatePriority")]
         public async Task<IActionResult> UpdateTaskPriority(string roomCode, string taskTitle, TaskPriorityUpdate request)
         {
             // Get user id from token
@@ -79,7 +78,7 @@ namespace EasyManagement.API.Controllers
         }
 
         [Authorize(Roles = "PM, ProjectManager")]
-        [HttpPut("update-status")]
+        [HttpPut("updateStatus")]
         public async Task<IActionResult> UpdateTaskStatus(string roomCode, string taskTitle, TaskStatusUpdate request)
         {
             // Get user id from token
@@ -98,7 +97,7 @@ namespace EasyManagement.API.Controllers
         }
 
         [Authorize(Roles = "PM, ProjectManager")]
-        [HttpPut("update-task")]
+        [HttpPut("updateTask")]
         public async Task<IActionResult> UpdateTask(string roomCode, string taskTitle, TaskUpdateDto request)
         {
             // Get user id from token
@@ -117,7 +116,7 @@ namespace EasyManagement.API.Controllers
         }
 
         [Authorize(Roles = "PM, ProjectManager")]
-        [HttpDelete("delete-task")]
+        [HttpDelete("delete")]
         public async Task<IActionResult> DeleteTask(TaskDeleteDto request)
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
