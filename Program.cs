@@ -31,11 +31,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddAutoMapper(map =>
+{
+    map.AddMaps(typeof(Program).Assembly);
+});
+
+
 
 builder.Services.AddScoped<IUserAuthService, UserAuthService>();
 builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 // CORS
 builder.Services.AddCors(options =>
