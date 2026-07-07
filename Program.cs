@@ -36,21 +36,12 @@ builder.Services.AddAutoMapper(map =>
     map.AddMaps(typeof(Program).Assembly);
 });
 
-
+builder.Host.SerilogConfiguration();
 
 builder.Services.AddScoped<IUserAuthService, UserAuthService>();
 builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
-
-// CORS
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll", builder =>
-    {
-        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-    });
-});
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

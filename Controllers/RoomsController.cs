@@ -24,8 +24,6 @@ namespace EasyManagement.API.Controllers
         {
             // Extract user ID from JWT token
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userIdClaim == null)
-                return Unauthorized("User ID not found in token.");
 
             // Parse user ID
             int userId = int.Parse(userIdClaim.Value);
@@ -43,13 +41,9 @@ namespace EasyManagement.API.Controllers
         {
             // Extract user ID from JWT token
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userIdClaim == null)
-                return Unauthorized("User ID not found in token.");
 
             // Extract user role from JWT token
             var userRoleClaim = User.FindFirst(ClaimTypes.Role);
-            if (userRoleClaim == null)
-                return BadRequest("Can't dedect role, please select your role before joining");
 
             // Parse user ID
             int userId = int.Parse(userIdClaim.Value);
@@ -58,10 +52,6 @@ namespace EasyManagement.API.Controllers
 
             // Call the service to join the room
             var success = await _roomService.JoinRoom(request.RoomCode ,userId, userRole);
-
-            // Return the result
-            if (!success)
-                return BadRequest("Failed to join the room. Please check the room code and try again.");
 
             // Return success message
             return Ok(new { message = "You Joined the room successfully" });
@@ -72,8 +62,6 @@ namespace EasyManagement.API.Controllers
         public async Task<IActionResult> RenameRoom(RoomUpdateDto request)
         {
             var userIdClaims = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userIdClaims == null)
-                return Unauthorized("User ID not found in token.");
             // Parse user ID
             int userId = int.Parse(userIdClaims.Value);
 
@@ -88,8 +76,7 @@ namespace EasyManagement.API.Controllers
         {
             // Extract user ID from JWT token
             var userIdClaims = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userIdClaims == null)
-                return Unauthorized("User ID not found in token.");
+           
             // Parse user ID
             int userId = int.Parse(userIdClaims.Value);
 
@@ -106,8 +93,7 @@ namespace EasyManagement.API.Controllers
         {
             // Extract user ID from JWT token
             var userIdClaims = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userIdClaims == null)
-                return Unauthorized("User ID not found in token.");
+           
             // Parse user ID
             int userId = int.Parse(userIdClaims.Value);
 

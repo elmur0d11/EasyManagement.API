@@ -3,6 +3,7 @@ using EasyManagement.API.Dto;
 using EasyManagement.API.Models;
 using EasyManagement.API.Services;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace EasyManagement.API.Controllers
 {
@@ -26,9 +27,7 @@ namespace EasyManagement.API.Controllers
 
             // Register user
             var user = await _authService.RegisterAsync(userModel);
-            if (user == null)
-                return BadRequest("User already exists.");
-
+           
             // Map User model to Read DTO
             return Created("", user);
         }
@@ -39,8 +38,6 @@ namespace EasyManagement.API.Controllers
             // Map DTO to User model
             var userModel = _mapper.Map<User>(request);
             var result = await _authService.LoginAsync(userModel);
-            if(result is null)
-                return BadRequest("Invalid username or password.");
 
             // Map User model to Read DTO
             return Ok(result);
@@ -51,8 +48,6 @@ namespace EasyManagement.API.Controllers
         {
             // Refresh tokens
             var result = await _authService.RefreshTokensAsync(request);
-            if (result is null || result.AccessToken is null || result.RefreshToken is null)
-                return BadRequest("Invalid refresh token.");
 
             // Map User model to Read DTO
             return Ok(result);

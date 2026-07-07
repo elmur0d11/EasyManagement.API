@@ -23,8 +23,6 @@ namespace EasyManagement.API.Controllers
         {
             // Extract user ID from JWT claims
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userIdClaim == null)
-                return Unauthorized("User ID not found in token.");
             // Parse the user ID from the claim
             int userId = int.Parse(userIdClaim.Value);
             // Call the service to update the account
@@ -39,8 +37,6 @@ namespace EasyManagement.API.Controllers
         {
             // Extract user ID from JWT claims
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            if(userIdClaim == null)
-                return Unauthorized("User ID not found in token.");
             // Parse the user ID from the claim
             int userId = int.Parse(userIdClaim.Value);
             // Call the service to update the password

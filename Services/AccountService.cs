@@ -18,7 +18,7 @@ namespace EasyManagement.API.Services
         {
             //Check if the user exists
             var user = await _context.users.FirstOrDefaultAsync(u => u.id == userId);
-            if (user == null) return null;
+            if (user == null) throw new UnauthorizedAccessException("Token not found! Login before using our services!");
 
             // Updating data
             user.username = request.username;
@@ -35,10 +35,10 @@ namespace EasyManagement.API.Services
         {
             // Check if the user exists
             var user = await _context.users.FirstOrDefaultAsync(u => u.id == userId);
-            if(user == null) return null;
+            if(user == null) throw new UnauthorizedAccessException("Token not found! Login before using our services!");
             // Check if the old password is correct
             if (!BCrypt.Net.BCrypt.Verify(request.OldPassword, user.password_hash))
-                return null;
+                throw new Exception("Invalid password!");
             // Updating the password
             user.password_hash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
 

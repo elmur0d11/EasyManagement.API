@@ -47,11 +47,11 @@ namespace EasyManagement.API.Services
         {
             // Find room by unique code
             var room = await _context.rooms.FirstOrDefaultAsync(u => u.UniqueCode == roomCode);
-            if (room is null) return false;
+            if (room is null) throw new Exception("Room not found"); ;
 
             // Check if user is already a member
             var isMember = await _context.roomMembers.AnyAsync(rm => rm.RoomId == room.Id && rm.UserId == userId);
-            if (isMember) return false;
+            if (isMember) throw new Exception("You already joined this room!"); ;
 
             // Add user as a member with his role
             var membership = new RoomMember
@@ -68,6 +68,7 @@ namespace EasyManagement.API.Services
             // Return success
             return true;
         }
+
         public async Task<IEnumerable<RoomReadDto>> GetRooms(int userId)
         {
             // Retrieve rooms where the user is a member

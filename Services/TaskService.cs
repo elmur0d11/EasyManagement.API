@@ -26,7 +26,7 @@ namespace EasyManagement.API.Services
 
             // Verify that the user is a owner of the room
             var isOwner = await _context.rooms.AnyAsync(r => r.OwnerId == userId);
-            if (!isOwner) throw new UnauthorizedAccessException("Only the owner can delete task.");
+            if (!isOwner) throw new UnauthorizedAccessException("Only the owner can create task.");
 
             // Set additional properties
             tasks.room_id = room.Id;
@@ -51,7 +51,7 @@ namespace EasyManagement.API.Services
             var isOwner = await _context.rooms.AnyAsync(r => r.OwnerId == userId);
             if (!isOwner) throw new UnauthorizedAccessException("Only the owner can delete task.");
 
-            if (request.TaskTitleReply != request.TaskTitle) throw new Exception("Please reply title of the task.");
+            if (request.TaskTitleReply != request.TaskTitle) throw new Exception("Please re-enter title of the task.");
 
             var task = await _context.tasks.FirstOrDefaultAsync(t => t.title == request.TaskTitle);
             if (task is null) throw new KeyNotFoundException("Room with the specified code does not exist.");
@@ -65,7 +65,7 @@ namespace EasyManagement.API.Services
         {
             // Verify that the room exists
             var room = await _context.rooms.FirstOrDefaultAsync(r => r.UniqueCode == roomCode);
-            if (room is null) throw new KeyNotFoundException("Room with the specified code does not exist.");
+            if (room is null) throw new KeyNotFoundException("Token not found! Login before using our services!");
 
             // Verify that the user is a member of the room
             var isMemeber = await _context.roomMembers.AnyAsync(rm => rm.RoomId == room.Id && rm.UserId == userId);
@@ -84,7 +84,7 @@ namespace EasyManagement.API.Services
         {
             // Verify that the room exists
             var room = await _context.rooms.FirstOrDefaultAsync(r => r.UniqueCode == roomCode);
-            if (room is null) throw new KeyNotFoundException("Room with the specified code does not exist.");
+            if (room is null) throw new KeyNotFoundException("Token not found! Login before using our services!");
 
             // Verify that the user is a member of the room
             var isMemeber = await _context.roomMembers.AnyAsync(rm => rm.RoomId == room.Id && rm.UserId == userId);
@@ -115,7 +115,7 @@ namespace EasyManagement.API.Services
         {
             // Verify that the room exists
             var room = await _context.rooms.FirstOrDefaultAsync(r => r.UniqueCode == roomCode);
-            if (room is null) throw new KeyNotFoundException("Room with the specified code does not exist.");
+            if (room is null) throw new KeyNotFoundException("Token not found! Login before using our services!");
 
             // Verify that the user is a member of the room
             var isMemeber = await _context.roomMembers.AnyAsync(rm => rm.RoomId == room.Id && rm.UserId == userId);
@@ -146,7 +146,7 @@ namespace EasyManagement.API.Services
         {
             // Verify that the room exists
             var room = await _context.rooms.FirstOrDefaultAsync(r => r.UniqueCode == roomCode);
-            if (room is null) throw new KeyNotFoundException("Room with the specified code does not exist.");
+            if (room is null) throw new KeyNotFoundException("Token not found! Login before using our services!");
 
             // Verify that the user is a owner of the room
             var isOwner = await _context.rooms.AnyAsync(r => r.OwnerId == userId);

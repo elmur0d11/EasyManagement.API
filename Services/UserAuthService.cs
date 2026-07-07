@@ -30,7 +30,7 @@ namespace EasyManagement.API.Services
         {
             // Check if username already exists
             if (await _context.users.AnyAsync(u => u.username == request.username))
-                return null!;
+                throw new Exception("This username is already exist");
 
             // Hash the password before saving
             request.password_hash = BCrypt.Net.BCrypt.HashPassword(request.password_hash);
@@ -47,11 +47,11 @@ namespace EasyManagement.API.Services
             // Find the user by username
             var user = await _context.users.FirstOrDefaultAsync(u => u.username == request.username);
             if (user is null)
-                return null;
+                throw new Exception("Invalid password or username");
 
             // Verify the password
             if (!BCrypt.Net.BCrypt.Verify(request.password_hash, user.password_hash))
-                return null;
+                throw new Exception("Invalid password or username");
 
             // Create and return the token response
             return await CreateTokenResponse(user);
@@ -62,7 +62,7 @@ namespace EasyManagement.API.Services
             // Validate the refresh token
             var user = await ValidateRefreshTokenAsync(request.RefreshToken);
             if(user is null)
-                return null;
+                throw new Exception("Cannot validate refresh token");
 
             return await CreateTokenResponse(user);
         }
@@ -80,7 +80,7 @@ namespace EasyManagement.API.Services
             // Find the user by refresh token
             var user = await _context.users.FirstOrDefaultAsync(t => t.refresh_token == refreshToken);
             if (user is null || user.refresh_token != refreshToken || user.refresh_token_expiry_time <= DateTime.UtcNow)
-                return null;
+                throw new Exception("Cannot find the user via refresh token");
 
             return user;
         }

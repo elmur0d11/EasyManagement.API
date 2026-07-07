@@ -22,15 +22,12 @@ namespace EasyManagement.API.Controllers
         {
             // Get user id from token
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userIdClaim == null)
-                return Unauthorized("User ID not found in token.");
 
             // Parse user id
             int userId = int.Parse(userIdClaim.Value);
 
             // Create task
             var result = await _taskService.CreateTaskAsync(request, userId);
-            if (result is null) return BadRequest("Can't create task");
 
             // Return created task
             return Created("", result);
@@ -42,8 +39,6 @@ namespace EasyManagement.API.Controllers
         {
             // Get user id from token
             var userIdClaims = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userIdClaims == null)
-                return Unauthorized("User ID not found in token.");
 
             // Parse user id
             int userId = int.Parse(userIdClaims.Value);
@@ -61,17 +56,12 @@ namespace EasyManagement.API.Controllers
         {
             // Get user id from token
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userIdClaim == null)
-                return Unauthorized("User ID not found in token.");
 
             // Parse user id
             int userId = int.Parse(userIdClaim.Value);
 
             // Update task priority
             var result = await _taskService.UpdatePriority(userId, taskTitle, roomCode, request);
-
-            // Check if update was successful
-            if (result is null) return BadRequest("Can't update task priority");
 
             // Return success message
             return Ok(result);
@@ -83,14 +73,12 @@ namespace EasyManagement.API.Controllers
         {
             // Get user id from token
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userIdClaim == null)
-                return Unauthorized("User ID not found in token.");
+           
             // Parse user id
             int userId = int.Parse(userIdClaim.Value);
 
             // Update task status
             var result = await _taskService.UpdateStatus(userId, taskTitle, roomCode, request);
-            if (result is null) return BadRequest("Can't update task status");
 
             // Return success message
             return Ok(result);
@@ -102,14 +90,12 @@ namespace EasyManagement.API.Controllers
         {
             // Get user id from token
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userIdClaim == null)
-                return Unauthorized("User ID not found in token.");
+           
             // Parse user id
             int userId = int.Parse(userIdClaim.Value);
 
             // Update task
             var result = await _taskService.UpdateTask(userId, taskTitle, roomCode, request);
-            if (result is null) return BadRequest("Can't update task");
 
             // Return success message
             return Ok(result);
@@ -120,7 +106,6 @@ namespace EasyManagement.API.Controllers
         public async Task<IActionResult> DeleteTask(TaskDeleteDto request)
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-            if (userIdClaim == null) return Unauthorized("User ID not found in token.");
             int userId = int.Parse(userIdClaim.Value);
 
             await _taskService.DeleteTask(userId, request);
