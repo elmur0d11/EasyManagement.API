@@ -3,6 +3,9 @@ using AutoMapper.Execution;
 using EasyManagement.API.Data;
 using EasyManagement.API.Dto;
 using Microsoft.EntityFrameworkCore;
+using KeyNotFoundException = EasyManagement.API.Exceptions.KeyNotFoundException;
+using UnauthorizedAccessException = EasyManagement.API.Exceptions.UnauthorizedAccessException;
+
 
 namespace EasyManagement.API.Services
 {

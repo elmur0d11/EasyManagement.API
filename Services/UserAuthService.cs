@@ -2,6 +2,7 @@
 using BCrypt.Net;
 using EasyManagement.API.Data;
 using EasyManagement.API.Dto;
+using EasyManagement.API.Exceptions;
 using EasyManagement.API.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using KeyNotFoundException = EasyManagement.API.Exceptions.KeyNotFoundException;
 
 
 namespace EasyManagement.API.Services
@@ -30,7 +32,7 @@ namespace EasyManagement.API.Services
         {
             // Check if username already exists
             if (await _context.users.AnyAsync(u => u.username == request.username))
-                throw new Exception("This username is already exist");
+                throw new KeyNotFoundException("This username is already exist");
 
             // Hash the password before saving
             request.password_hash = BCrypt.Net.BCrypt.HashPassword(request.password_hash);
@@ -47,11 +49,11 @@ namespace EasyManagement.API.Services
             // Find the user by username
             var user = await _context.users.FirstOrDefaultAsync(u => u.username == request.username);
             if (user is null)
-                throw new Exception("Invalid password or username");
+                throw new KeyNotFoundException("Invalid password or username");
 
             // Verify the password
             if (!BCrypt.Net.BCrypt.Verify(request.password_hash, user.password_hash))
-                throw new Exception("Invalid password or username");
+                throw new KeyNotFoundException("Invalid password or username");
 
             // Create and return the token response
             return await CreateTokenResponse(user);
@@ -62,7 +64,7 @@ namespace EasyManagement.API.Services
             // Validate the refresh token
             var user = await ValidateRefreshTokenAsync(request.RefreshToken);
             if(user is null)
-                throw new Exception("Cannot validate refresh token");
+                throw new BadRequestException("Cannot validate refresh token");
 
             return await CreateTokenResponse(user);
         }
@@ -80,7 +82,7 @@ namespace EasyManagement.API.Services
             // Find the user by refresh token
             var user = await _context.users.FirstOrDefaultAsync(t => t.refresh_token == refreshToken);
             if (user is null || user.refresh_token != refreshToken || user.refresh_token_expiry_time <= DateTime.UtcNow)
-                throw new Exception("Cannot find the user via refresh token");
+                throw new BadRequestException("Cannot find the user via refresh token");
 
             return user;
         }

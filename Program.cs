@@ -1,4 +1,5 @@
 using DotNetEnv;
+using EasyManagement.API.Configuration;
 using EasyManagement.API.Data;
 using EasyManagement.API.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -58,8 +59,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.AddGlobalErrorHandler();
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+
 
 app.Run();

@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
 using EasyManagement.API.Data;
 using EasyManagement.API.Dto;
+using EasyManagement.API.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using KeyNotFoundException = EasyManagement.API.Exceptions.KeyNotFoundException;
+using UnauthorizedAccessException = EasyManagement.API.Exceptions.UnauthorizedAccessException;
 
 namespace EasyManagement.API.Services
 {
@@ -38,7 +41,7 @@ namespace EasyManagement.API.Services
             if(user == null) throw new UnauthorizedAccessException("Token not found! Login before using our services!");
             // Check if the old password is correct
             if (!BCrypt.Net.BCrypt.Verify(request.OldPassword, user.password_hash))
-                throw new Exception("Invalid password!");
+                throw new BadRequestException("Invalid password!");
             // Updating the password
             user.password_hash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
 

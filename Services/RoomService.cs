@@ -3,6 +3,8 @@ using EasyManagement.API.Data;
 using EasyManagement.API.Dto;
 using EasyManagement.API.Models;
 using Microsoft.EntityFrameworkCore;
+using KeyNotFoundException = EasyManagement.API.Exceptions.KeyNotFoundException;
+using UnauthorizedAccessException = EasyManagement.API.Exceptions.UnauthorizedAccessException;
 
 namespace EasyManagement.API.Services
 {
@@ -47,7 +49,7 @@ namespace EasyManagement.API.Services
         {
             // Find room by unique code
             var room = await _context.rooms.FirstOrDefaultAsync(u => u.UniqueCode == roomCode);
-            if (room is null) throw new Exception("Room not found"); ;
+            if (room is null) throw new KeyNotFoundException("Room not found"); ;
 
             // Check if user is already a member
             var isMember = await _context.roomMembers.AnyAsync(rm => rm.RoomId == room.Id && rm.UserId == userId);
