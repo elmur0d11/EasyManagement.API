@@ -9,9 +9,11 @@ namespace EasyManagement.API.Configuration
     public class GlobalExceptionHandlingMiddleware
     {
         private readonly RequestDelegate _next;
-        public GlobalExceptionHandlingMiddleware(RequestDelegate next)
+        private readonly ILogger<GlobalExceptionHandlingMiddleware> _logger;
+        public GlobalExceptionHandlingMiddleware(RequestDelegate next, ILogger<GlobalExceptionHandlingMiddleware> logger)
         {
             _next = next;
+            _logger = logger;
         }
 
         public async Task Invoke(HttpContext context)
@@ -21,6 +23,7 @@ namespace EasyManagement.API.Configuration
                 await _next(context);
             } catch (Exception ex)
             {
+                _logger.LogError("Unhandled exception. Path: {Path}, Method: {Method}", context.Request.Path, context.Request.Method);
                 await HandleExceptionAsync(context, ex);
             } 
         }

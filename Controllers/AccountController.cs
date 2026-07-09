@@ -12,9 +12,11 @@ namespace EasyManagement.API.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IAccountService _accountService;
-        public AccountController(IAccountService accountService)
+        private readonly ILogger<AccountController> _logger;
+        public AccountController(IAccountService accountService, ILogger<AccountController> logger)
         {
             _accountService = accountService;
+            _logger = logger;
         }
 
         [Authorize]
@@ -27,6 +29,7 @@ namespace EasyManagement.API.Controllers
             int userId = int.Parse(userIdClaim.Value);
             // Call the service to update the account
             var result = await _accountService.UpdateAccount(userId, request);
+            _logger.LogInformation("Account updated successfully. User ID: {userId}", userId);
             // Return the result
             return Ok(result);
         }
@@ -41,6 +44,7 @@ namespace EasyManagement.API.Controllers
             int userId = int.Parse(userIdClaim.Value);
             // Call the service to update the password
             var result = await _accountService.UpdatePassword(userId, request);
+            _logger.LogInformation("Password updated successfully. User ID: {userId}", userId);
             // Return the result
             return Ok(result);
         }

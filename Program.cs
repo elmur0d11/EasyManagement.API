@@ -36,7 +36,7 @@ builder.Services.AddAutoMapper(map =>
 {
     map.AddMaps(typeof(Program).Assembly);
 });
-
+// Adding Serilog configuration to the host builder
 builder.Host.SerilogConfiguration();
 
 builder.Services.AddScoped<IUserAuthService, UserAuthService>();

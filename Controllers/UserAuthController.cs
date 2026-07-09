@@ -13,21 +13,23 @@ namespace EasyManagement.API.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IUserAuthService _authService;
-        public UserAuthController(IMapper mapper,IUserAuthService authService)
+        private readonly ILogger<UserAuthController> _logger;
+        public UserAuthController(IMapper mapper,IUserAuthService authService, ILogger<UserAuthController> logger)
         {
             _mapper = mapper;
             _authService = authService;
+            _logger = logger;
         }
 
         [HttpPost("register")]
         public async Task<ActionResult> Register(UserCreateDto request)
         {
+            _logger.LogInformation("Register request recieved for email: {email}", request.email);
             // Map DTO to User model
             var userModel = _mapper.Map<User>(request);
-
             // Register user
             var user = await _authService.RegisterAsync(userModel);
-           
+            _logger.LogInformation("User successfully registered. Username: {username}", request.username);
             // Map User model to Read DTO
             return Created("", user);
         }
@@ -35,10 +37,11 @@ namespace EasyManagement.API.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<TokenResponseDto>> Login(UserLoginDto request)
         {
+            _logger.LogInformation("Login request recieved for Username: {username}", request.username);
             // Map DTO to User model
             var userModel = _mapper.Map<User>(request);
             var result = await _authService.LoginAsync(userModel);
-
+            _logger.LogInformation("User logged successfully. Username: {username}", request.username);
             // Map User model to Read DTO
             return Ok(result);
         }
@@ -46,9 +49,10 @@ namespace EasyManagement.API.Controllers
         [HttpPost("refreshToken")]
         public async Task<ActionResult<TokenResponseDto>> RefreshToken(RefreshTokenRequestDto request)
         {
+            _logger.LogInformation("Refresh token request received.");
             // Refresh tokens
             var result = await _authService.RefreshTokensAsync(request);
-
+            _logger.LogInformation("Token refreshed successfully.");
             // Map User model to Read DTO
             return Ok(result);
         }
