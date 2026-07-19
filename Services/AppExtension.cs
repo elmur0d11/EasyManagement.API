@@ -10,10 +10,8 @@ namespace EasyManagement.API.Services
         {
             host.UseSerilog((context, loggerConfig) =>
             {
-                // Configure Serilog to log to console
-                loggerConfig.WriteTo.Console();
-                // Configure Serilog to log to a file in JSON format with daily rolling
-                loggerConfig.WriteTo.File(new JsonFormatter(), "logs/applogs-.txt", rollingInterval: RollingInterval.Day);
+                // Reading all the information about logging from the appsettings.json file
+                loggerConfig.ReadFrom.Configuration(context.Configuration);
             });
         }
     }

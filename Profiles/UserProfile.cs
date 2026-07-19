@@ -8,9 +8,13 @@ namespace EasyManagement.API.Profiles
     {
         public UserProfile()
         {
-            CreateMap<UserCreateDto, User>();
+            CreateMap<UserCreateDto, User>()
+                .ForMember(dest => dest.PasswordHash,
+                opt => opt.MapFrom(src => src.Password));
             CreateMap<User, UserReadDto>();
-            CreateMap<UserLoginDto, User>();
+            CreateMap<UserLoginDto, User>()
+                .ForMember(dest => dest.PasswordHash,
+                opt => opt.MapFrom(src => src.Password));
         }
     }
 }

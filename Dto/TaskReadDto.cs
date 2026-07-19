@@ -1,11 +1,13 @@
-﻿namespace EasyManagement.API.Dto
+﻿using EasyManagement.API.Enums;
+
+namespace EasyManagement.API.Dto
 {
     public class TaskReadDto
     {
-        public string title { get; set; } = string.Empty;
-        public string description { get; set; } = string.Empty;
-        public string priority { get; set; } = "Low";
-        public string status { get; set; } = "In Progress";
-        public DateTime created_at { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public TaskPriority Priority { get; set; }
+        public ProjectTaskStatus Status { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }

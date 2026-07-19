@@ -1,7 +1,6 @@
 ﻿using EasyManagement.API.Dto;
 using EasyManagement.API.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 

@@ -59,15 +59,15 @@ namespace EasyManagement.API.Controllers
         [Authorize]
         [HttpPut("rename")]
         public async Task<IActionResult> RenameRoom(RoomUpdateDto request)
-        {
-            _logger.LogInformation("Renaming room. RoomCode: {RoomCode}, NewName: {NewName}", request.UniqueCode, request.RoomName);
-            var userIdClaims = User.FindFirst(ClaimTypes.NameIdentifier);
-            // Parse user ID
-            int userId = int.Parse(userIdClaims.Value);
-            var rooms = await _roomService.UpdateRoom(userId, request);
-            _logger.LogInformation("Room renamed successfully. RoomCode: {RoomCode}, NewName: {NewName}", request.UniqueCode, request.RoomName);
-            return Ok(rooms);
-        }
+            {
+                _logger.LogInformation("Renaming room. RoomCode: {RoomCode}, NewName: {NewName}", request.UniqueCode, request.RoomName);
+                var userIdClaims = User.FindFirst(ClaimTypes.NameIdentifier);
+                // Parse user ID
+                int userId = int.Parse(userIdClaims.Value);
+                var rooms = await _roomService.UpdateRoom(userId, request);
+                _logger.LogInformation("Room renamed successfully. RoomCode: {RoomCode}, NewName: {NewName}", request.UniqueCode, request.RoomName);
+                return Ok(rooms);
+            }
 
         [Authorize]
         [HttpGet("rooms")]

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using EasyManagement.API.Data;
 using EasyManagement.API.Dto;
+using EasyManagement.API.Exceptions;
 using EasyManagement.API.Models;
 using Microsoft.EntityFrameworkCore;
 using KeyNotFoundException = EasyManagement.API.Exceptions.KeyNotFoundException;
@@ -27,10 +28,10 @@ namespace EasyManagement.API.Services
             room.OwnerId = ownerId;
 
             // Save to database
-            await _context.rooms.AddAsync(room);
+            await _context.Rooms.AddAsync(room);
 
             // Add owner as a member with PM role
-            await _context.roomMembers.AddAsync(new RoomMember
+            await _context.RoomMembers.AddAsync(new RoomMember
             {
                 UserId = ownerId,
                 Room = room,
@@ -48,11 +49,11 @@ namespace EasyManagement.API.Services
         public async Task<bool> JoinRoom(string roomCode, int userId, string role)
         {
             // Find room by unique code
-            var room = await _context.rooms.FirstOrDefaultAsync(u => u.UniqueCode == roomCode);
+            var room = await _context.Rooms.FirstOrDefaultAsync(u => u.UniqueCode == roomCode);
             if (room is null) throw new KeyNotFoundException("Room not found"); ;
 
             // Check if user is already a member
-            var isMember = await _context.roomMembers.AnyAsync(rm => rm.RoomId == room.Id && rm.UserId == userId);
+            var isMember = await _context.RoomMembers.AnyAsync(rm => rm.RoomId == room.Id && rm.UserId == userId);
             if (isMember) throw new Exception("You already joined this room!"); ;
 
             // Add user as a member with his role
@@ -65,7 +66,7 @@ namespace EasyManagement.API.Services
             };
 
             // Save membership to database and commit changes
-            await _context.roomMembers.AddAsync(membership);
+            await _context.RoomMembers.AddAsync(membership);
             await _context.SaveChangesAsync();
             // Return success
             return true;
@@ -74,7 +75,7 @@ namespace EasyManagement.API.Services
         public async Task<IEnumerable<RoomReadDto>> GetRooms(int userId)
         {
             // Retrieve rooms where the user is a member
-            var userRooms = await _context.roomMembers
+            var userRooms = await _context.RoomMembers
                 .Where(rm => rm.UserId == userId)
                 .Include(rm => rm.Room)
                 .Select(rm => rm.Room)
@@ -87,11 +88,11 @@ namespace EasyManagement.API.Services
         {
             var room = _mapper.Map<Room>(request);
 
-            var rooms = await _context.rooms.FirstOrDefaultAsync(r => r.UniqueCode == request.UniqueCode);
+            var rooms = await _context.Rooms.FirstOrDefaultAsync(r => r.UniqueCode == request.UniqueCode);
             if (rooms is null) throw new KeyNotFoundException("Room with the specified code does not exist.");
 
-            var isOwner = await _context.rooms.AnyAsync(r => r.OwnerId == userId);
-            if (!isOwner) throw new UnauthorizedAccessException("Only the owner can delete the room.");
+            if (rooms.OwnerId != userId)
+                throw new UnauthorizedAccessException("Only the room owner can rename the room.");
 
             rooms.RoomName = room.RoomName;
 
@@ -102,15 +103,15 @@ namespace EasyManagement.API.Services
 
         public async Task<RoomReadDto> DeleteRoom(int userId, RoomDeleteDto request)
         {
-            if (request.RoomNameReply != request.RoomName) throw new Exception("Please reply title of the task.");
-
-            var rooms = await _context.rooms.FirstOrDefaultAsync(r => r.UniqueCode == request.RoomCode);
+            var rooms = await _context.Rooms.FirstOrDefaultAsync(r => r.UniqueCode == request.RoomCode);
             if (rooms is null) throw new KeyNotFoundException("Room with the specified code does not exist.");
 
-            var isOwner = await _context.rooms.AnyAsync(r=>r.OwnerId == userId);
-            if (!isOwner) throw new UnauthorizedAccessException("Only the owner can delete the room.");
+            if (request.RoomNameReply != rooms.RoomName) throw new BadRequestException("Please reply title of the task.");
 
-            _context.rooms.Remove(rooms);
+            if (rooms.OwnerId != userId)
+                throw new UnauthorizedAccessException("Only the room owner can delete the room.");
+
+            _context.Rooms.Remove(rooms);
             await _context.SaveChangesAsync();
 
             return null!;

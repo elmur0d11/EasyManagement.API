@@ -10,10 +10,10 @@ namespace EasyManagement.API.Data
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
 
         // Define DbSets for each entity
-        public DbSet<User> users { get; set; }
-        public DbSet<Room> rooms { get; set; }
-        public DbSet<RoomMember> roomMembers { get; set; }
-        public DbSet<Models.Task> tasks { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Room> Rooms { get; set; }
+        public DbSet<RoomMember> RoomMembers { get; set; }
+        public DbSet<Models.Task> Tasks { get; set; }
 
         // Configure entity relationships and constraints
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -23,19 +23,19 @@ namespace EasyManagement.API.Data
                 // Tell EF that 'user_id' is the foreign key for 'User'
                 entity.HasOne(t => t.User)
                       .WithMany() // or .WithMany(u => u.Tasks) if you added that collection
-                      .HasForeignKey(t => t.user_id);
+                      .HasForeignKey(t => t.UserId);
 
                 // Tell EF that 'room_id' is the foreign key for 'Room'
                 entity.HasOne(t => t.Room)
                       .WithMany()
-                      .HasForeignKey(t => t.room_id);
+                      .HasForeignKey(t => t.RoomId);
             });
 
             // If room deleted delete all its tasks
             modelBuilder.Entity<Models.Task>()
                 .HasOne(t => t.Room)
                 .WithMany()
-                .HasForeignKey(t => t.room_id)
+                .HasForeignKey(t => t.RoomId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // If room deleted delete all its members
@@ -44,6 +44,7 @@ namespace EasyManagement.API.Data
                 .WithMany()
                 .HasForeignKey(rm => rm.RoomId)
                 .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }

@@ -1,10 +1,11 @@
-﻿using EasyManagement.API.Models;
+﻿using EasyManagement.API.Enums;
+using EasyManagement.API.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace EasyManagement.API.Dto
 {
     public class TaskPriorityUpdate
     {
-        public string Priority { get; set; } = string.Empty;
+        public TaskPriority Priority { get; set; }
     }
 }

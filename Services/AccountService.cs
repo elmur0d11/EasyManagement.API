@@ -20,30 +20,29 @@ namespace EasyManagement.API.Services
         public async Task<AccountReadDto> UpdateAccount(int userId, AccountUpdateDto request)
         {
             //Check if the user exists
-            var user = await _context.users.FirstOrDefaultAsync(u => u.id == userId);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
             if (user == null) throw new UnauthorizedAccessException("Token not found! Login before using our services!");
 
             // Updating data
-            user.username = request.username;
-            user.full_name = request.full_name;
-            user.email = request.email;
-            user.role = request.role;
+            user.Username = request.Username;
+            user.FullName = request.FullName;
+            user.Email = request.Email;
+            user.Role = request.Role;
 
             await _context.SaveChangesAsync();
 
             return _mapper.Map<AccountReadDto>(user);
         }
-
         public async Task<AccountReadDto> UpdatePassword(int userId, PasswordUpdateDto request)
         {
             // Check if the user exists
-            var user = await _context.users.FirstOrDefaultAsync(u => u.id == userId);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
             if(user == null) throw new UnauthorizedAccessException("Token not found! Login before using our services!");
             // Check if the old password is correct
-            if (!BCrypt.Net.BCrypt.Verify(request.OldPassword, user.password_hash))
+            if (!BCrypt.Net.BCrypt.Verify(request.OldPassword, user.PasswordHash))
                 throw new BadRequestException("Invalid password!");
             // Updating the password
-            user.password_hash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
 
             await _context.SaveChangesAsync();
 

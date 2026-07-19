@@ -4,7 +4,6 @@ using EasyManagement.API.Data;
 using EasyManagement.API.Dto;
 using EasyManagement.API.Exceptions;
 using EasyManagement.API.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -31,14 +30,12 @@ namespace EasyManagement.API.Services
         public async Task<UserReadDto> RegisterAsync(User request)
         {
             // Check if username already exists
-            if (await _context.users.AnyAsync(u => u.username == request.username))
+            if (await _context.Users.AnyAsync(u => u.Username == request.Username))
                 throw new KeyNotFoundException("This username is already exist");
-
             // Hash the password before saving
-            request.password_hash = BCrypt.Net.BCrypt.HashPassword(request.password_hash);
-
+            request.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.PasswordHash);
             // Save the user to the database
-            _context.users.Add(request);
+            _context.Users.Add(request);
             await _context.SaveChangesAsync();
 
             // Map to UserReadDto and return
@@ -47,12 +44,12 @@ namespace EasyManagement.API.Services
         public async Task<TokenResponseDto?> LoginAsync(User request)
         {
             // Find the user by username
-            var user = await _context.users.FirstOrDefaultAsync(u => u.username == request.username);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
             if (user is null)
                 throw new KeyNotFoundException("Invalid password or username");
-
+            Console.WriteLine($"Request Password: '{request.PasswordHash}'");
             // Verify the password
-            if (!BCrypt.Net.BCrypt.Verify(request.password_hash, user.password_hash))
+            if (!BCrypt.Net.BCrypt.Verify(request.PasswordHash, user.PasswordHash))
                 throw new KeyNotFoundException("Invalid password or username");
 
             // Create and return the token response
@@ -80,8 +77,8 @@ namespace EasyManagement.API.Services
         private async Task<User?> ValidateRefreshTokenAsync(string refreshToken)
         {
             // Find the user by refresh token
-            var user = await _context.users.FirstOrDefaultAsync(t => t.refresh_token == refreshToken);
-            if (user is null || user.refresh_token != refreshToken || user.refresh_token_expiry_time <= DateTime.UtcNow)
+            var user = await _context.Users.FirstOrDefaultAsync(t => t.RefreshToken == refreshToken);
+            if (user is null || user.RefreshToken != refreshToken || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
                 throw new BadRequestException("Cannot find the user via refresh token");
 
             return user;
@@ -99,8 +96,8 @@ namespace EasyManagement.API.Services
         {
             // Generate a new refresh token and save it to the user
             var refreshToken = GenerateRefreshToken();
-            user.refresh_token = refreshToken;
-            user.refresh_token_expiry_time = DateTime.UtcNow.AddDays(7);
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
             await _context.SaveChangesAsync();
             return refreshToken;
         }
@@ -110,9 +107,9 @@ namespace EasyManagement.API.Services
             // Define claims
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.username),
-                new Claim(ClaimTypes.NameIdentifier, user.id.ToString()),
-                new Claim(ClaimTypes.Role, user.role)
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Role, user.Role.ToString())
             };
 
             // Create signing credentials

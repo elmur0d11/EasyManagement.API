@@ -22,14 +22,14 @@ namespace EasyManagement.API.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> CreateTask(TaskCreateDto request)
         {
-            _logger.LogInformation("Creating task. Title: {title}, Room: {room_code}", request.title, request.room_code);
+            _logger.LogInformation("Creating task. Title: {title}, Room: {room_code}", request.Title, request.RoomCode);
             // Get user id from token
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
             // Parse user id
             int userId = int.Parse(userIdClaim.Value);
             // Create task
             var result = await _taskService.CreateTaskAsync(request, userId);
-            _logger.LogInformation("Task created successfully. Title: {title}, Room: {room_code}", request.title, request.room_code);
+            _logger.LogInformation("Task created successfully. Title: {title}, Room: {room_code}", request.Title, request.RoomCode);
             // Return created task
             return Created("", result);
         }

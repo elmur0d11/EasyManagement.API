@@ -1,10 +1,12 @@
-﻿namespace EasyManagement.API.Dto
+﻿using EasyManagement.API.Enums;
+
+namespace EasyManagement.API.Dto
 {
     public class AccountUpdateDto
     {
-        public string username { get; set; } = string.Empty;
-        public string full_name { get; set; } = string.Empty;
-        public string email { get; set; } = string.Empty;
-        public string role { get; set; } = "User";
+        public string Username { get; set; } = string.Empty;
+        public string FullName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public UserRole Role { get; set; }
     }
 }

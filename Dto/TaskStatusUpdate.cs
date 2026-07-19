@@ -1,7 +1,9 @@
-﻿namespace EasyManagement.API.Dto
+﻿using EasyManagement.API.Enums;
+
+namespace EasyManagement.API.Dto
 {
     public class TaskStatusUpdate
     {
-        public string Status { get; set; } = string.Empty;
+        public ProjectTaskStatus Status { get; set; }
     }
 }

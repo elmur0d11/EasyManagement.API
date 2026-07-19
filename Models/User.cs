@@ -1,15 +1,17 @@
-﻿namespace EasyManagement.API.Models
+﻿using EasyManagement.API.Enums;
+
+namespace EasyManagement.API.Models
 {
     public class User
     {
-        public int id { get; set; }
-        public string username { get; set; } = string.Empty;
-        public string full_name { get; set; } = string.Empty;
-        public string email { get; set; } = string.Empty;
-        public string password_hash { get; set; } = string.Empty;
-        public string role { get; set; } = "User";
-        public string? refresh_token { get; set; }
-        public DateTime refresh_token_expiry_time { get; set; }
+        public int Id { get; set; }
+        public string Username { get; set; } = string.Empty;
+        public string FullName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string PasswordHash { get; set; } = string.Empty;
+        public UserRole Role { get; set; } = UserRole.User;
+        public string? RefreshToken { get; set; }
+        public DateTime RefreshTokenExpiryTime { get; set; }
 
     }
 }

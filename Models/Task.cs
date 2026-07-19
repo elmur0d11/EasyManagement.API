@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using EasyManagement.API.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EasyManagement.API.Models
@@ -6,19 +7,19 @@ namespace EasyManagement.API.Models
     public class Task
     {
         public int id { get; set; }
-        public string title { get; set; } = string.Empty;
-        public string description { get; set; } = string.Empty;
-        public string priority { get; set; } = "Low";
-        public string status { get; set; } = "In Progress";
-        public string room_code { get; set; } = string.Empty;
-        public DateTime created_at { get; set; } = DateTime.UtcNow;
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public TaskPriority Priority { get; set; } = TaskPriority.Low;
+        public ProjectTaskStatus Status { get; set; } = ProjectTaskStatus.Todo;
+        public string RoomCode { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         [ForeignKey("User")]
-        public int user_id { get; set; }
+        public int UserId { get; set; }
         public User User { get; set; } = null!;
 
         [ForeignKey("Room")]
-        public int room_id { get; set; }    
+        public int RoomId { get; set; }    
         public Room Room { get; set; } = null!;
     }
 }
