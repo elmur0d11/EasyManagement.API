@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EasyManagement.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260714190304_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20260727185954_initialMigration")]
+    partial class initialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

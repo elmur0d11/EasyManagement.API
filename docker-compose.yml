@@ -1,0 +1,30 @@
+services:
+  easy_manage:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: easy_manage_api
+    ports:
+      - "8081:8080"
+    depends_on:
+      - db
+    env_file:
+      - .env
+
+  db:
+    image: postgres:17
+    container_name: db_postgresql_container
+
+    ports:
+      - "5432:5432"
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: "7655"
+      POSTGRES_DB: easy_manage_db
+
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:

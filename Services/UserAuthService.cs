@@ -47,7 +47,6 @@ namespace EasyManagement.API.Services
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
             if (user is null)
                 throw new KeyNotFoundException("Invalid password or username");
-            Console.WriteLine($"Request Password: '{request.PasswordHash}'");
             // Verify the password
             if (!BCrypt.Net.BCrypt.Verify(request.PasswordHash, user.PasswordHash))
                 throw new KeyNotFoundException("Invalid password or username");
